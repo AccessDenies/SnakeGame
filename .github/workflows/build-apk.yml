@@ -26,6 +26,7 @@ jobs:
             git zip unzip \
             openjdk-17-jdk \
             autoconf automake libtool libtool-bin \
+            libltdl-dev \
             m4 pkg-config \
             zlib1g-dev libncurses5-dev libncursesw5-dev \
             cmake libffi-dev libssl-dev
