@@ -1,3 +1,4 @@
+import os
 import random
 from kivy.app import App
 from kivy.clock import Clock
@@ -14,7 +15,15 @@ class SnakeGame(Widget):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
-        self.store = JsonStore("snake_data.json")
+        # Android safe storage path setup
+        app = App.get_running_app()
+        if app:
+            data_dir = app.user_data_dir
+            store_path = os.path.join(data_dir, "snake_data.json")
+        else:
+            store_path = "snake_data.json"
+
+        self.store = JsonStore(store_path)
 
         if self.store.exists("score"):
             self.high_score = self.store.get("score")["high_score"]
@@ -323,13 +332,10 @@ class SnakeGame(Widget):
         if abs(dx) > abs(dy):
 
             if dx > 0:
-
                 # Right
                 if self.direction != (-1, 0):
                     self.next_direction = (1, 0)
-
             else:
-
                 # Left
                 if self.direction != (1, 0):
                     self.next_direction = (-1, 0)
@@ -338,13 +344,10 @@ class SnakeGame(Widget):
         else:
 
             if dy > 0:
-
                 # Up
                 if self.direction != (0, -1):
                     self.next_direction = (0, 1)
-
             else:
-
                 # Down
                 if self.direction != (0, 1):
                     self.next_direction = (0, -1)
@@ -355,11 +358,8 @@ class SnakeGame(Widget):
 class SnakeApp(App):
 
     def build(self):
-
         Window.clearcolor = (0.03, 0.08, 0.03, 1)
-
         game = SnakeGame()
-
         return game
 
 
