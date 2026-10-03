@@ -8,15 +8,23 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      # Naya step: Correctly Java 17 set karne ke liye
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
       - name: Set up Python 3.10
         uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
       - name: Install System Dependencies
+        # openjdk-17-jdk yahan se hata diya hai kyunki upar setup-java use kiya hai
         run: |
           sudo apt update
-          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          sudo apt install -y git zip unzip python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
 
       - name: Install Buildozer & Cython
         run: |
@@ -24,8 +32,9 @@ jobs:
           pip install "cython<3.0.0" buildozer
 
       - name: Build APK
+        # 'yes |' add kiya hai taaki SDK licenses automatically accept ho jayein (agar prompt aaye toh build hang na ho)
         run: |
-          buildozer android debug
+          yes | buildozer android debug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
